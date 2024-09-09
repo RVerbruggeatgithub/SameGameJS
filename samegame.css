@@ -1,0 +1,284 @@
+.box {
+    position: fixed;
+    display:block;
+    box-sizing: border-box;
+    background-color: none;
+    box-shadow:
+        inset 0 0 5px #fff;
+    border-radius: 20%;           
+    }
+
+.top_center{
+    position: fixed;
+    width: 500px;
+    height: 50px;
+    top: 0px;
+    left: 50%;
+    margin-top: -5px; /* Negative half of height. */
+    margin-left: -250px; 
+    display:block;
+}
+
+div#pop-up {
+    display: none;
+    position: fixed;
+    width: 280px;
+    padding: 10px;
+    background: #eeeeee;
+    color: #000000;
+    border: 1px solid #1a1a1a;
+    font-size: 90%;
+    z-index: 999;
+}
+
+.field {
+    width: 508px;
+    height: 500px;
+    left:38px;
+    top:48px;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute; /* Ensure absolute positioned child elements are relative to this*/
+    border:4px solid #cccccc;
+    background: #1f1d2b;
+    border-radius: 3px;  
+    color: white;
+    text-align: center;
+}
+
+.wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative; /* Ensure absolute positioned child elements are relative to this*/
+    display: block;
+}
+
+.scorekeeper {
+    float: left;
+    display: block;
+    height: 24px;
+    width: 100px;
+    border:2px solid white;
+    color: white;
+    text-align: center;
+    padding-top: 3px;
+    font-weight: bold;
+}
+
+.controls {
+    display: none;
+    width: 400px;
+    background-color: white;
+    border:  2px solid #666666;
+    
+}
+
+.highlight {
+    border:2px dashed #cccccc;
+}
+
+.clearHighLight {
+    border: 0px dashed #cccccc;
+}
+
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 10px; /* Specified height */
+    background: #cccccc; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+
+.scorepop { 
+    font-size: 30px;
+    color: #fff;
+    text-shadow:
+        0 0 7px #fff,
+        0 0 10px #fff,
+        0 0 21px rgb(4, 9, 36),
+        0 0 42px rgb(4, 9, 36),
+        0 0 82px rgb(4, 9, 36);
+    height: 30px;
+    width: 100px;
+
+}
+
+.statstable {
+    color: white;
+}
+
+body {
+    background-color: black;
+    color: white;
+}
+
+.optionmenu {
+  width: 0.5em;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+  scrollbar-color: white black;
+}
+
+
+label {
+    text-align: right;
+    float:left;
+    font-weight: bold;
+    color: white;
+}
+
+
+.mainmenu, .optionmenu, .statsmenu, .seedmenu{
+height: 100%;
+width: 0;
+position: fixed;
+z-index: 1;
+top: 0;
+left: 0;
+background-color: #111;
+overflow-x: hidden;
+transition: 0.5s;
+padding-top: 60px;
+color: white;
+font-family: az_ea_font,"Segoe UI",az_font,system-ui,-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+}
+
+.mainmenu a, .optionmenu a, .statsmenu a, .seedmenu a {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+font-size: 25px;
+color: #818181;
+display: block;
+transition: 0.3s;
+}
+
+
+
+.mainmenu a:hover, .optionmenu a:hover, .statsmenu a:hover, .seedmenu a:hover {
+color: #f1f1f1;
+
+}
+
+.menbut:hover{
+    color: #f1f1f1;
+    /*border:2px solid #f1f1f1;*/
+}
+
+.mainmenu > .closebtn, .optionmenu > .closebtn, .statsmenu > .closebtn, .seedmenu > .closebtn{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.optionmenu > table{
+    position: absolute;
+    width: 100%;
+}
+
+.menbut, .menitm{
+    background-color: #111;
+    /*padding: 4px 7px 4px 7px;*/
+    text-decoration: none;
+    /*float:right;*/
+    margin-right: 10px;
+    
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    /*border:2px solid #818181;
+    border-radius: 5px; */
+}
+
+select{
+    background-color: #111;
+    padding: 4px 7px 4px 7px;
+    text-decoration: none;
+    float:left;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    border:2px solid #818181;
+    border-radius: 5px; 
+}
+
+@media screen and (max-height: 450px) {
+    .mainmenu {
+        padding-top: 15px;
+    }
+    .mainmenu a {
+        font-size: 18px;
+    }
+}
+
+section {
+    display: flex;
+    flex-flow: row wrap;
+    height: 230px;
+    border-color: hsla(150, 5%, 75%, 1);
+  }
+  section > div {
+    flex: 1;
+    padding: 0.5rem;
+    
+  }
+  input[type="radio"] {
+    display: none;
+    &:not(:disabled) ~ label {
+      cursor: pointer;
+    }
+    &:disabled ~ label {
+      color: hsla(150, 5%, 75%, 1);
+      border-color: hsla(150, 5%, 75%, 1);
+      box-shadow: none;
+      cursor: not-allowed;
+      
+    }
+  }
+  section > label {
+    height: 100%;
+    
+    display: block;
+    background: white;
+    border: 2px solid hsla(150, 75%, 50%, 1);
+    border-radius: 20px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    box-shadow: 0px 3px 10px -2px hsla(150, 5%, 65%, 0.5);
+    position: relative;
+  }
+  input[type="radio"]:checked + label {
+    background: hsla(150, 75%, 50%, 1);
+    height: 220px;
+    color: hsla(215, 0%, 100%, 1);
+    box-shadow: 0px 0px 20px hsla(150, 100%, 50%, 0.75);
+
+  }
+  input[type="radio"]#control_05:checked + label {
+    background: red;
+    border-color: red;
+  }
+
+  .img-btn img{
+    width:50px;
+    height:50px;
+  }
+  .img-btn > input{
+    display:none
+  }
+  .img-btn > img{
+    cursor:pointer;
+    border:2px solid transparent;
+    border-radius: 50%;
+  }
+  .img-btn > input:checked + img{
+    border-color: #f1f1f1;
+    border-radius: 50%;
+  }
+
