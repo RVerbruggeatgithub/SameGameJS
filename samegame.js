@@ -11,7 +11,6 @@ class SameGame {
         this.height = h; //amount of squares per col
         this.variation = n > 8 ? 8 : n; //amount of colors, max 8
         this.square_size = s; //size of each square in px
-        this.squares = this.CreateMap()
         this.update = true
         this.score = 0;
         this.colorspick;
@@ -24,6 +23,8 @@ class SameGame {
         this.border_highlight = "2px solid white"; //"2px dashed #cccccc"
         this.gameisrunning = true;
         this.seedData = []
+        this.colorspick = []
+        this.squares = this.CreateMap()
         this.stats = {
             "group_sizes_cleared" : [],
             "highest_combo_scored" : 0,
@@ -37,7 +38,7 @@ class SameGame {
     }
 
     CreateMap(){
-        this.colorspick = ["2BAF10","AF8C10","2D70BC","C0269C","26B8C0","6E26C0","8F1A1A","1A8F89","FFFF00","C0FFEE"]
+        
         let game_width = this.square_size*this.width
         this.left_adj = (this.screenwidth - game_width) / 2 - ((this.square_size*this.height) / 2);
 
@@ -64,6 +65,19 @@ class SameGame {
     StopTimer(){
         this.timer = 0
         this.stoptime = true
+    }
+
+    SetColorScheme(colors){
+        try {
+            if (colors.length != 10){
+                throw new Error('not enough colors avaialble.');
+            }
+            this.colorspick = colors
+        }
+        catch (error) {
+            this.SetColorScheme(["2BAF10","AF8C10","2D70BC","C0269C","26B8C0","6E26C0","8F1A1A","1A8F89","FFFF00","C0FFEE"])
+            //throw new Error('Invalid color set provided.');
+        }
     }
 
     StartTimer(){
@@ -227,8 +241,7 @@ class SameGame {
             return true
         }
         catch (error) {
-            console.log(error)
-            return false
+            throw new Error('Invalid Seed data');
         }
         
     }
@@ -261,7 +274,7 @@ class SameGame {
             this.CheckMovesLeft()
         }
         catch (error) {
-            console.log(error)
+            throw new Error('Unable to draw map!');
         }
     }
 
@@ -272,7 +285,7 @@ class SameGame {
         this.score = 0;
         this.UpdateScore();
         this.mode = $('input[name="gamemode"]:checked').val();
-        this.variation = $('input[name="variation"]:checked').val(); //Math.round($('#variation').val());
+        this.variation = Math.round($('#variation').val());
         this.width = Math.round($('#Width').val());
         this.height =  Math.round($('#Height').val());
         this.stats = {
@@ -405,9 +418,7 @@ class SameGame {
                     }
                 }
                 catch (error) {
-                    console.log(error)
-                    console.log(this.squares)
-                    console.log(this.square_size)
+                    throw new Error('Invalid Map data!');
                 }
                 if (collector.length > 1){
                     return true

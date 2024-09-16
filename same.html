@@ -7,7 +7,13 @@
         <script type="text/javascript" src="utilfn.js"></script>
         <link rel="stylesheet" href="samegame.css">
         <script>
-
+            difficulty_level = ["", "", "Very Easy", "Beginner", "Novice", "Intermediate", "Expert", "Master", "Grand Master", "Impossible"]
+            colorSchemes= {
+                "Standard" : ["2BAF10","AF8C10","2D70BC","C0269C","26B8C0","6E26C0","8F1A1A","1A8F89","FFFF00","C0FFEE"],
+                "Nature" : ['f99b95','254c3d','65927a','cab69a','8b7764','088da5','003366','ffffff','93c572','ffdf9e'],
+                "Instagram" : ['5b51d8','c13584','f77737','ffdc80','833ab4','e1306c','fd1d1d','405de6','fcaf45','ffffff'],
+                "GreyScale" : ['B2BEB5','A9A9A9','808080','6082B6','D3D3D3','899499','C0C0C0','848884','71797E','708090'],
+            }
             function openMainMenu() {
                 $("#mySidenav").width("100%")
             }
@@ -52,8 +58,8 @@
             }
 
             function closeSeed() {
-                $("#myOptionNav").width("100px")
-                $("#mySidenav").width("0%")
+                
+                $("#mySidenav").width("100%")
                 $("#myStatsNav").width("0%")
                 $("#mySeedNav").width("0%")
             }
@@ -68,10 +74,44 @@
             game = new SameGame(20, 16, 3, 30, 0)
             
             $(document).ready(function(){
+                openMainMenu()
                 $(seeddata.data).map(function () {
                     console.log(this.name)
                     $('#loadseeds').append($("<option>XX</option>").val(this.seed).html(this.name));
                 })
+
+
+                Object.keys(colorSchemes).map(function(item, index){
+                        
+                        esp = colorSchemes[item]
+                        let penta = `<div class="_card"><input class="_input" type="radio" name="card" id="card" value="${item}">
+                                    <span class="_check"></span>
+                                    <label class="_label">
+                                      <div class="_title">`
+                        for (const el in esp){
+                            penta+="<span style='float:left;background-color:#"+esp[el]+";width:10px;height:30px;display:block'></span>"
+                        }
+                        penta+=`</div>
+                                    </label>
+                                  </div>`
+                                  console.log(penta)
+                        $('._wrapper').append(penta)
+                })
+
+                   
+                $("#next").click(function() {
+                var nextElement = $('#variation > option:selected').next('option');
+                if (nextElement.length > 0) {
+                    $('#variation > option:selected').removeAttr('selected').next('option').attr('selected', 'selected');
+                }
+                });
+
+                $("#prev").click(function() {
+                var nextElement = $('#variation > option:selected').prev('option');
+                if (nextElement.length > 0) {
+                    $('#variation > option:selected').removeAttr('selected').prev('option').attr('selected', 'selected');
+                }
+                });
 
                 game.NewGame()
                 $( "#resume" ).show()
@@ -118,8 +158,20 @@
                     let qseed = this.value
                     let width, height, difficulty, size, mode
                     [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)
+//                    if error
+//$('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
+                    $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>"+Math.round(width)+" x "+Math.round(height)+"</span>, Difficulty: <span style='font-weight: bold'>"+difficulty_level[Math.round(difficulty)-1]+"</span>, Square Size: <span style='font-weight: bold'>"+Math.round(size)+"</span>, Mode: <span style='font-weight: bold'>"+mode+"</span>")
                     $('#seeddata').val(qseed)
                 })
+
+                $('#seeddata').change(function(){
+                    let qseed = this.value
+                    let width, height, difficulty, size, mode
+                    [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)                  
+                    $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>"+Math.round(width)+" x "+Math.round(height)+"</span>, Difficulty: <span style='font-weight: bold'>"+difficulty_level[Math.round(difficulty)-1]+"</span>, Square Size: <span style='font-weight: bold'>"+Math.round(size)+"</span>, Mode: <span style='font-weight: bold'>"+mode+"</span>")
+                })
+
+
 
                 $(document).on("mouseenter", ".box", function() {
                     // hover starts code here
@@ -144,6 +196,7 @@
                 });
 
                 $('#newgame').on('click',null, {} ,function(ev){
+                    game.SetColorScheme(colorSchemes[$('#card:checked').val()])
                     game.NewGame()
                     $( "#openmenu" ).show()
                     closeNav()
@@ -160,8 +213,20 @@
 
                 $('#playseed').on('click',null, {} ,function(ev){
                     //CHECK IF SEED WORKS FIRST!!
-                    game.LoadSeed($('#seeddata').val())
-                    closeAll()
+                    try {
+                        
+
+
+                        game.LoadSeed($('#seeddata').val())
+                        closeAll()
+                        
+                    }
+                    catch (err) {
+                        $('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
+                    }
+
+                    
+                    
                 })
 
                 
@@ -214,7 +279,7 @@
         </script>
     </head>
     <body>
-        <span style="font-size:30px;cursor:pointer; float: left;" class="menbut" onclick="openMainMenu()">&#9776; Menu</span>
+        <span style="font-size:30px;cursor:pointer; float: left; margin-left: 0px" class="menbut" onclick="openMainMenu()">&#9776; Menu</span>
         
         <div class="top_center" style="padding: 12 12 0 12">
                         <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="score" style="float: left; margin: 5 25 5 5;"></div></span>
@@ -233,18 +298,19 @@
         </div>
         <div id="message_box" class="popmsg" style="display: block;"> </div>
         <div id="mySidenav" class="mainmenu">
-            <span style="font-size:30px;cursor:pointer;  height: 50px; width: 50%; margin-left: 25%" class="" id="">SAME GAME!</span>
-            <span style="font-size:30px;cursor:pointer;  height: 50px; width: 50%; margin-left: 25%" class="menitm" id=""></span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="newgame">&#11106; New Game</span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="options">&#11106; Options</span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="stats">&#11106; Statistics</span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="lseed">&#11106; Load Seed</span>
-            <span style="font-size:30px;cursor:pointer;  height: 50px; width: 50%; margin-left: 25%" class="menitm" id=""></span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="resume">&#11106; Resume</span>
+            <span style="font-size:30px;cursor:pointer;  " class="menitm" id="">SAME GAME!</span>
+            <br />
+            <br />
+            <span style="font-size:30px;cursor:pointer;  " class="menbut" id="newgame">New Game</span>
+            <span style="font-size:30px;cursor:pointer; " class="menbut" id="options">Options</span>
+            <span style="font-size:30px;cursor:pointer;  " class="menbut" id="stats">Statistics</span>
+            <span style="font-size:30px;cursor:pointer;  " class="menbut" id="lseed">Load Seed</span>
+            <br />
+            <span style="font-size:30px;cursor:pointer;  " class="menbut" id="resume">Resume</span>
         </div>
         <div id="myStatsNav" class="statsmenu">
-            <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 40%" class="menbut" onclick="closeStats()">&#11106; Back</span>
-            <span style="font-size:30px;cursor:pointer;  width: 20%; margin-left: 35%" class="menitm">
+            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" onclick="closeStats()">&#11106; Back</span>
+            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%; max-height:700px; " class="menitm">
                 <p>
                     <i>Current Game statistics:</i>
                 </p>
@@ -252,8 +318,8 @@
             </span>
         </div>
         <div id="mySeedNav" class="seedmenu">
-            <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 40%" class="menbut" onclick="closeStats()">&#11106; Back</span>
-            <span style="font-size:30px;cursor:pointer;  width: 20%; margin-left: 35%" class="menitm">
+            <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 25%" class="menbut" onclick="closeSeed()">&#11106; Back</span>
+            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%; max-height:700px;" class="menitm">
                 <p>
                     
                     <table>
@@ -274,19 +340,20 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <textarea id="seeddata" name="seeddata" rows="5" cols="100" class="menitm"></textarea>
+                                <div id="seeddetails" name="seeddetails"></div>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" id="playseed">&#11106; Play</span>
+                                <textarea id="seeddata" name="seeddata" rows="5" cols="100" class="menitm" style="width:75%; float:left"></textarea>
                             </td>
-                            
                         </tr>
                         
                     </table>
+                    
                 </p>
             </span>
+            <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 25%" class="menbut" id="playseed">&#11106; Play</span>
         </div>
         <div id="myOptionNav" class="optionmenu">
             <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" onclick="closeOptions()">&#11106; Back</span>
@@ -302,24 +369,24 @@
                             <h2>Select Mode*:</h2>
                             <section>
                             <div>
-                              <input type="radio" id="control_01" name="gamemode" value="0" checked>
-                              <label for="control_01">
+                              <input type="radio" id="control_01" name="gamemode" value="0" checked  class="apx">
+                              <label class="apxlabel" for="control_01">
                                 <h2>Classic</h2>
                                 <p>Empty the field by selecting the groups. The bigger the groups, the bigger the score. Clearing the entire field will double your final score.</p>
                               </label>
                             </div>
                             <div>
-                              <input type="radio" id="control_02" name="gamemode" value="1">
-                              <label for="control_02">
+                              <input type="radio" id="control_02" name="gamemode" value="1" class="apx">
+                              <label class="apxlabel" for="control_02">
                                 <h2>Endless</h2>
-                                <p>Dig through the field to score as many points as you can until you can't play anymore.</p>
+                                <p>Dig through the field to score as many points as you can. Play until you're stuck or until your bored. Best played with Novice or higher difficulty. </p>
                               </label>
                             </div>
                             <div>
-                              <input type="radio" id="control_03" name="gamemode" value="2">
-                              <label for="control_03">
+                              <input type="radio" id="control_03" name="gamemode" value="2"  class="apx">
+                              <label class="apxlabel" for="control_03">
                                 <h2>Survival</h2>
-                                <p>start with 30 second timer. Clearing groups will earn you extra time. Larger groups give increased extra time. Starts at Beginner difficulty and increases over time.</p>
+                                <p>Time is counting down. Clear groups to earn extra time, bigger groups give additional extra time. Difficulty Starts at Beginner and increases over time.</p>
                               </label>
                             </div>
                             </section>
@@ -328,35 +395,19 @@
                     </tr>
                     <tr>
                         <td colspan="2"><h2>Difficulty*:</h2> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation" checked="checked" value="3">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAFpOLgnAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV8/pCoVUTuIOASpTnZREcdSxSJYKG2FVh1MLv2CJg1Jiouj4Fpw8GOx6uDirKuDqyAIfoA4OzgpukiJ/0sKLWI8OO7Hu3uPu3eAt1FhiuGPAopq6ql4TMjmVoXAK3rgxwAGMSYyQ0ukFzNwHV/38PD1LsKz3M/9OfrkvMEAj0AcZZpuEm8Qz26aGud94hAriTLxOfGkThckfuS65PAb56LNXp4Z0jOpeeIQsVDsYKmDWUlXiGeIw7KiUr4367DMeYuzUqmx1j35C4N5dSXNdZqjiGMJCSQhQEINZVRgIkKrSoqBFO3HXPwjtj9JLolcZTByLKAKBaLtB/+D390ahekpJykYA7peLOtjHAjsAs26ZX0fW1bzBPA9A1dq219tAHOfpNfbWvgI6N8GLq7bmrQHXO4Aw0+aqIu25KPpLRSA9zP6phwwdAv0rjm9tfZx+gBkqKvlG+DgEJgoUva6y7u7O3v790yrvx+KjnKwkuxwHwAAAAZiS0dEAB4AcQA8XM/sfAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAAd0SU1FB+gJBBEUFwQoXbwAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABW0lEQVRo3u2ZwXGDMBBFv5gUQM65xB2EEijBLsEluARKoAXuycEF+KAGMkMBycE5hwP3n0PEjEJwwLY0geS/k0Aa7S67q9kVQHxI0n9OevMbzAGSeTe+GVDd4E/BT44ki6u8KUL6ZHWpIwd9kgws3g8F/JiE6iLVhJhdgpG0XeiTLEmWMQRZfiULufmWZE2y9QS07l0Ua3KStQJICCF+KNgml1VnCKm6Kr07iUmmoYUUXkvAKFW+095nH0NAy+/YqXskIwJSADsATW/qDUATw/krZ0EVO5QtyXVsIWudGkIIIYQQ8yPYvw5XD+cADsaYw4l62l/zNOdur/A7CncPt+1d9hWzd69T+sjT1LFK9SSgERmAh5FltwA2wduygM2q5fnYkAaZK41I3VdOAdx748wl9Z3XID8CeAbwDuAVwIsxpllCvhSLSvAJxpTBr5B+wZB08UYIIYT4F3wAvoS3/i32k2kAAAAASUVORK5CYII=" alt="Very Easy" >
-                           </label>
-                           <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="4">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAFpOLgnAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV8/pCoVUTuIOASpTnZREcdSxSJYKG2FVh1MLv2CJg1Jiouj4Fpw8GOx6uDirKuDqyAIfoA4OzgpukiJ/0sKLWI8OO7Hu3uPu3eAt1FhiuGPAopq6ql4TMjmVoXAK3rgxwAGMSYyQ0ukFzNwHV/38PD1LsKz3M/9OfrkvMEAj0AcZZpuEm8Qz26aGud94hAriTLxOfGkThckfuS65PAb56LNXp4Z0jOpeeIQsVDsYKmDWUlXiGeIw7KiUr4367DMeYuzUqmx1j35C4N5dSXNdZqjiGMJCSQhQEINZVRgIkKrSoqBFO3HXPwjtj9JLolcZTByLKAKBaLtB/+D390ahekpJykYA7peLOtjHAjsAs26ZX0fW1bzBPA9A1dq219tAHOfpNfbWvgI6N8GLq7bmrQHXO4Aw0+aqIu25KPpLRSA9zP6phwwdAv0rjm9tfZx+gBkqKvlG+DgEJgoUva6y7u7O3v790yrvx+KjnKwkuxwHwAAAAZiS0dEAB4AcQA8XM/sfAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAAd0SU1FB+gJBBEULcIkhA4AAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACXklEQVRo3u2ZP4sTQRjGf5MinZLDSq8xFtqpIVfZ7Rc4ucNPkEbSCpY2ucY6IBZXno2NggeChVyRL3BHmqs8i6hgCnMQULF4LHwXhmGS3TWJUZxfk2XmyTu8O3+fWVgdki5Lkj1LUsZfiaSupGZYKEljSYd5Gv8+lpWKymrB/y4CZ0HZM+AaiSX0ydacuizWJ5L01e8068MRkMWifA57WR4zh0pRWThMmpE4u6mHE+uaWPcl9bzd6LWkK4GmKWmQTzRJfUn9ytucx2iGbhDoWmWC1yU9lzQKG5H0VlLXdB1JQ0lTTzO1sn7V17Yvaa9Ak0kapkGWSCT+h73kQmzpj5Q15x3iChsxz5Ev648lnUZ0B97Gltky36hsAyQd2+9JRNPz9hpVNkG2j/hsz9hHfA6rNPBEcbpBA9OIZhCLWQsauANsAWO/GHgHtE3TAB4AkyDWB2BSyfbaiUUFlqBpmoNFjPl5Cd1A0s4ic2avhGYnrS6JRCKRSCQS68WVPUUCXeCTc+5ppL4O3ATuAT+cc4/mxMr4dXF95Jw7itQ3rD7XvFy2u2t7zmAs6aGk7cDCnJSM1fNdht3NdYILwN6qbOp1z9TFOC9zLLdYncjFo8+w6vG9VrLhS8DdAlkdaPteb0asFnC7INYGsLu0L5TmsPZVnXGYkBnYwW/EGpRJyM1Jog5s2pu+6j3fsIl4y6TfgDfAK+A78B44c859DCbwBtCwWPlzy2Jteqb5BXAMfPFiTVY1X9pVJ3jJid/74+u2JXMafuNYIJl+pWulJSZSX0YS+dBbSxKJRCKRSBg/ASn8dndaGjCSAAAAAElFTkSuQmCC" alt="Beginner">
-                            </label> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="5">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAFpOLgnAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV8/pCoVUTuIOASpTnZREcdSxSJYKG2FVh1MLv2CJg1Jiouj4Fpw8GOx6uDirKuDqyAIfoA4OzgpukiJ/0sKLWI8OO7Hu3uPu3eAt1FhiuGPAopq6ql4TMjmVoXAK3rgxwAGMSYyQ0ukFzNwHV/38PD1LsKz3M/9OfrkvMEAj0AcZZpuEm8Qz26aGud94hAriTLxOfGkThckfuS65PAb56LNXp4Z0jOpeeIQsVDsYKmDWUlXiGeIw7KiUr4367DMeYuzUqmx1j35C4N5dSXNdZqjiGMJCSQhQEINZVRgIkKrSoqBFO3HXPwjtj9JLolcZTByLKAKBaLtB/+D390ahekpJykYA7peLOtjHAjsAs26ZX0fW1bzBPA9A1dq219tAHOfpNfbWvgI6N8GLq7bmrQHXO4Aw0+aqIu25KPpLRSA9zP6phwwdAv0rjm9tfZx+gBkqKvlG+DgEJgoUva6y7u7O3v790yrvx+KjnKwkuxwHwAAAAZiS0dEAB4AcQA8XM/sfAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAAd0SU1FB+gJBBEVEm1ZmHIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAC30lEQVRo3u2ZMWgUQRSG/7lIQJYIsQgJWilKLK66ziJw6dJKSCdomTaWFoGLTcAijZX1gWAjEbQQbBKss4l6Tbo0USFNTGGQ+ywyew6T3b25y53mYP7mdnfmzdybeW/e+99IFwaA/63iNwDVcx2Be5xhXJcFQLOjF/CZv2hXJMkYYyT9lpSaM1Q0CsjUCGnraGS1zTot234b9tMVSV9CZm4pIn9lGiVtD3raSKB2rs2xX+x7CjSBCvArdzDPd/HfC83EMQ0BK/bxeshCTEZziBjkYVcWogpkFoDUiVgHQNL1RM1xkamcvlX7O+OJfSsavA5seZ23siPDOjLAkdOeACvAjie3A2xkf6JMo7obCslHy5N5BCxddL+m7OALwzaMpegeERERwz1mCkNA16SuLFP3ZMaAdkZagD1gLzhg9RAZ8WJNWprTenM0ivLZDt06e37pyT0M1sLBFNBywu0+MGefvxbINH3qWpe0Jmnbm3tb0rwx5rukWUm7dglvSzoB7ktKJe07MqeSPkl63zORBn54/3Q6J2Mhz9qCJgGOC5ak6vQZBw7yxitivvOO8GNJu3YZMuxLeiVp0iEQp5KeDMLxMs4+NkzvrgLr/+IYibQoIiIiIiIi4v+SmkYZZbAlK9wq0gXmmgFeuMm5154AS8C7vmo6OSlvox9uFDhXzb1IAj4Aq5ap0JVThexKCeoDVOQmsFky10G/u7FFIByZZeBjEa+2F4xvgDU3kQZuAa+9ymkeDovMr1dS2lUhp5yLNYtVayZt53vNoR+tPqZqBysUQukL+q52Wdl1YNJeQE0A14AbwF1g1nLaTa/m8My23wGmS6vyvexUSZ+ntnRQhiPLNquBjp8O40guutBteqYTilaJP9VsiSlo9c0AlEtskSGRNGHHTCQtSlp2CghvJT2XdCjpRNKxpJ/GmHbBuBVJV40xJ5chqKa+g49yhpACc3aFR1qRZOSViIiIuDz4Ax5kpy7cFI49AAAAAElFTkSuQmCC" alt="Novice">
-                            </label> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="6">
-                                <img src="data:image/png;base64,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" alt="Expert">
-                            </label> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="7">
-                                <img src="data:image/png;base64,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" alt="Master">
-                            </label> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="8">
-                                <img src="data:image/png;base64,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" alt="India Flag">
-                            </label> 
-                            <label class="img-btn">
-                                <input type="radio" name="variation" id="variation"  value="9">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAFpOLgnAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV8/pCoVUTuIOASpTnZREcdSxSJYKG2FVh1MLv2CJg1Jiouj4Fpw8GOx6uDirKuDqyAIfoA4OzgpukiJ/0sKLWI8OO7Hu3uPu3eAt1FhiuGPAopq6ql4TMjmVoXAK3rgxwAGMSYyQ0ukFzNwHV/38PD1LsKz3M/9OfrkvMEAj0AcZZpuEm8Qz26aGud94hAriTLxOfGkThckfuS65PAb56LNXp4Z0jOpeeIQsVDsYKmDWUlXiGeIw7KiUr4367DMeYuzUqmx1j35C4N5dSXNdZqjiGMJCSQhQEINZVRgIkKrSoqBFO3HXPwjtj9JLolcZTByLKAKBaLtB/+D390ahekpJykYA7peLOtjHAjsAs26ZX0fW1bzBPA9A1dq219tAHOfpNfbWvgI6N8GLq7bmrQHXO4Aw0+aqIu25KPpLRSA9zP6phwwdAv0rjm9tfZx+gBkqKvlG+DgEJgoUva6y7u7O3v790yrvx+KjnKwkuxwHwAAAAZiS0dEAB4AcQA8XM/sfAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAAd0SU1FB+gJBBEWNnp3L2AAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAABwklEQVRo3u1aO3LCMBB9Ymh1AlLEo2uQIjlHKnIOKMw5oOEgLsI1FlLACXwA0sgTRWPLkr0yMLOvwhYre7W7bz9jgA1Eumx+z52bBYATgGOX1A33BpG+Eenv5nrmrS/xzFB9525MrYJC1rTrto3ahIO+Iehxw6IrLuYtMlsAJyLduuGs5d462lUCoflhTF0Frf0QcS14Fr8vuhgitNYXGz5PnYm069VXAIsUHpvFaGNMvXEuF16wDqPrGCZOYWaVaJ+Lo8mXMfU+JwFKqhAIBCNo5DBkLZXqz5avDs7m7za/fI6m+o4yzE1aWy/XDE9aHhapArEP2UZkzOHHZW0ROvtw5RqRfmOr2qBtFMMDGhyNqd9G5XgivQKwazzMmPqF2/DwioZ9zuifpvuQSkUgEAgEgvvW+0UzN72HfJbyhUhfbGEW+3+22cmcSZcfp1/ZEemdXxt3jLOOACqOF1CcVkHk3C22CcjRX6VYJbrB4LIGtyKviZ3qEsCKK9DVSHdaASiHtNrcbqYmjIesCinut7CuUgZGCmwBnlWRHqtlUYI72P1hwgb/p0msLDWZIhYV/r6PqPomVI9ei5UyGBEIBAIfv05d2DeQ8FnhAAAAAElFTkSuQmCC" alt="Grand Master">
-                            </label> 
+                            <button class="adjbutton" type="button" id="prev" style="float:left;">◀</button>
+                            <select id="variation" disabled>
+                            <option value="3">Very Easy</option>
+                            <option value="4">Beginner</option>
+                            <option value="5">Novice</option>
+                            <option value="6">Intermediate</option>
+                            <option value="7">Expert</option>
+                            <option value="8">Master</option>
+                            <option value="9">Grand Master</option>
+                            </select>
+                            <button class="adjbutton" type="button" id="next">▶</button>
 
+                            
                         </td>
                     </tr>
                     <tr>
@@ -421,15 +472,16 @@
                           
                         </td>
                         <td>
-                            <div id="sample" class="box" style="position:relative; width: 50px; height: 50px; background-color: #b1abab; border-width: 0px; border-style: solid;"></div>
+                            <div id="sample" style="position:relative; width: 50px; height: 50px; background-color: #b1abab; border-width: 0px; border-style: solid;border-radius: 20%; "></div>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><h2>Color Schema:</h2></td>
+                        <td colspan="2"><h2>Color Schema*:</h2></td>
                     </tr>
                     <tr>
                         <td>
-                            https://uiverse.io/andrew-demchenk0/dry-elephant-32
+                            <div class="_wrapper">
+                            </div>
                         </td>
                         <td>
                             
