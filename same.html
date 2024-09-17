@@ -94,7 +94,6 @@
                         penta+=`</div>
                                     </label>
                                   </div>`
-                                  console.log(penta)
                         $('._wrapper').append(penta)
                 })
 
@@ -177,19 +176,19 @@
                     // hover starts code here
                     game.HighLight($(this).attr('id'))
                     let cur_border_color = $(this).css("border-left-color")
-
                 });
 
                 $(document).on("mouseleave", ".box", function() {
                     // hover starts code here
                     collector = game.HighLight($(this).attr('id'))
                     if (collector.length){
-                        for (let cell in collector){
-                            $("#"+collector[cell]).css('border-top', '0px solid #cccccc');
-                            $("#"+collector[cell]).css('border-right', '0px solid #cccccc');
-                            $("#"+collector[cell]).css('border-bottom', '0px solid #cccccc');
-                            $("#"+collector[cell]).css('border-left', '0px solid #cccccc');
-                            //$("#"+collector[cell]).toggleClass("clearHighLight")
+                        for (let cell in collector) {
+                            let cellcolor = $(this).css("background-color")
+                            let resetbordercolor = "2px solid " + cellcolor
+                            $("#" + collector[cell]).css('border-right', resetbordercolor);
+                            $("#" + collector[cell]).css('border-bottom', resetbordercolor);
+                            $("#" + collector[cell]).css('border-left', resetbordercolor);
+                            $("#" + collector[cell]).css('border-top', resetbordercolor);
                         }
                     }
   
@@ -282,20 +281,21 @@
         <span style="font-size:30px;cursor:pointer; float: left; margin-left: 0px" class="menbut" onclick="openMainMenu()">&#9776; Menu</span>
         
         <div class="top_center" style="padding: 12 12 0 12">
-                        <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="score" style="float: left; margin: 5 25 5 5;"></div></span>
-                        <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="timer" style="display: none; float: left; margin: 5 5 5 25;"></div></span>
+                      
         </div>
-        <div class="wrapper">
+        <div style="height: 50px;">
+            <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="score" style="float: left; margin: 5 25 5 5;"></div></span>
+            <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="timer" style="display: none; float: left; margin: 5 5 5 25;"></div></span>
+        </div>
+        <div class="ufld">
             <div name="samegamefield" id="samegamefield" class="field">
                 <div>
                     Welcome!
                 </div>
             </div>
         </div>
-        <div id="dialog-ready" title="Ready?" style="display: none"></div>
-        <div id="dialog-gameover" title="Game Over" style="display: none">
-
-        </div>
+        
+        
         <div id="message_box" class="popmsg" style="display: block;"> </div>
         <div id="mySidenav" class="mainmenu">
             <span style="font-size:30px;cursor:pointer;  " class="menitm" id="">SAME GAME!</span>
@@ -474,6 +474,13 @@
                         <td>
                             <div id="sample" style="position:relative; width: 50px; height: 50px; background-color: #b1abab; border-width: 0px; border-style: solid;border-radius: 20%; "></div>
                         </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <label for="responsive_mode">Enable Responsive Mode</label><br>
+                            <input type="checkbox" id="responsive_mode" name="responsive_mode" value="1">
+                            
+                          </td>
                     </tr>
                     <tr>
                         <td colspan="2"><h2>Color Schema*:</h2></td>

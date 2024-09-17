@@ -7,6 +7,7 @@ class SameGame {
     constructor(w, h, n, s, m){
         this.screenwidth = screen.width;
         this.left_adj = 0;
+        this.responsive = false
         this.width = w; //amount of squares per row
         this.height = h; //amount of squares per col
         this.variation = n > 8 ? 8 : n; //amount of colors, max 8
@@ -44,7 +45,7 @@ class SameGame {
 
         $("#samegamefield").css('height', (this.square_size*this.height) + "px");
         $("#samegamefield").css('width', game_width + "px");
-        $("#samegamefield").css('left', this.left_adj + "px");
+        //$("#samegamefield").css('left', this.left_adj + "px");
         //green, orange, blue, magentha, aqua, purple, red, teal
         let _board = []
         for (let r = 0; r < this.height; r++){
@@ -78,6 +79,23 @@ class SameGame {
             this.SetColorScheme(["2BAF10","AF8C10","2D70BC","C0269C","26B8C0","6E26C0","8F1A1A","1A8F89","FFFF00","C0FFEE"])
             //throw new Error('Invalid color set provided.');
         }
+    }
+
+    Toggle_ResponsiveMode(){
+        //get height, subtract 50 (menu) from it
+        this.responsive = !this.responsive
+        let flex_height = window.innerHeight - 85;
+        let flex_width = window.innerWidth - 85;
+        if (flex_height < 400) {
+            throw new Error('Screen height too small.');
+        }
+
+        $(".ufld").css('height', flex_height + "px");
+        $(".ufld").css('width', flex_width + "px");
+        this.width = Math.floor(flex_width / 50)
+        this.height = Math.floor(flex_height / 50)
+        console.log(this.width, this.height)
+
     }
 
     StartTimer(){
@@ -235,8 +253,9 @@ class SameGame {
             }
             this.square_size = Math.round(squaresize)
             this.squares = outputData
-            $("#samegamefield").css('height', (this.square_size*this.height) + "px");
-            $("#samegamefield").css('width', (this.square_size*this.width) + "px");
+            //$("#samegamefield").css('height', (this.square_size*this.height) + "px");
+            //$("#samegamefield").css('width', (this.square_size * this.width) + "px");
+
             this.DrawMap()
             return true
         }
@@ -250,7 +269,10 @@ class SameGame {
         if (this.update){
             $("#samegamefield").css('height', (this.square_size*this.height) + "px");
             $("#samegamefield").css('width', (this.square_size*this.width) + "px");
-            $("#samegamefield").css('left', this.left_adj + "px");
+            //$("#samegamefield").css('left', this.left_adj + "px");
+            
+            $(".ufld").css('height', (this.square_size * this.height) + "px");
+            $(".ufld").css('width', (this.square_size * this.width) + "px");
             this.update = false
         }
         let _x_pos = 0
@@ -259,10 +281,16 @@ class SameGame {
         for (var r = 0; r <= this.squares.length-1; r++){
             for (let c = 0; c <= this.squares[r].length-1; c++){
                 let e = ""
-                
-                if (this.squares[r][c] != null){
-                    let _left = Math.round(_x_pos) + 12 + this.left_adj
-                    e = $('<div id="'+_x_pos+'_'+_y_pos+'" class="box" style="width:'+this.square_size+'px; height:'+this.square_size+'px; top:'+(_y_pos+60)+'px;left:'+_left+'px;background-color:#'+this.squares[r][c]+';"></div>');$("#samegamefield").append(e)
+                let _left = Math.round(_x_pos)
+                if (this.squares[r][c] != null) {
+                    //let _left = Math.round(_x_pos) + 12 + this.left_adj
+                    e = $('<div id="' + _x_pos + '_' + _y_pos + '" class="box" style="width:' + (this.square_size - 4) + 'px; height:' + (this.square_size - 4) + 'px; top:' + (_y_pos) + 'px;float:left;left:' + _left + 'px;background-color:#' + this.squares[r][c] + ';border-top: 2px solid #' + this.squares[r][c] + '; border-right: 2px solid #' + this.squares[r][c] + '; border-bottom: 2px solid #' + this.squares[r][c] + '; border-left: 2px solid #' + this.squares[r][c] + ';border-radius: 20%;"></div>');
+                    $("#samegamefield").append(e)
+                }
+                else {
+                    //let _left = Math.round(_x_pos) + 12 + this.left_adj
+                    e = $('<div id="' + _x_pos + '_' + _y_pos + '" class="ebox" style="width:' + (this.square_size - 4) + 'px; height:' + (this.square_size - 4) + 'px; top:' + (_y_pos) + 'px;float:left;left:' + _left + 'px;background-color:#000000; border: 2px solid gray;"></div>');
+                    $("#samegamefield").append(e)
                 }
                 
                 _x_pos += this.square_size
@@ -286,8 +314,14 @@ class SameGame {
         this.UpdateScore();
         this.mode = $('input[name="gamemode"]:checked').val();
         this.variation = Math.round($('#variation').val());
-        this.width = Math.round($('#Width').val());
-        this.height =  Math.round($('#Height').val());
+        if (this.responsive) {
+            this.Toggle_ResponsiveMode()
+        }
+        else {
+            this.width = Math.round($('#Width').val());
+            this.height = Math.round($('#Height').val());
+        }
+
         this.stats = {
             "group_sizes_cleared" : [0,0],
             "highest_combo_scored" : 0,
@@ -587,8 +621,10 @@ class SameGame {
             return null
         }
         //pivot rows to cols to move all null values up
+        _apex = transpose(this.squares) 
         
-        _apex = transpose(this.squares)    
+        let fldsize = _apex.length
+        
         for (let _q in _apex){
             _dpex[_q] = []
             for (let _c in _apex[_q]){
@@ -599,13 +635,23 @@ class SameGame {
                     _dpex[_q].unshift(null)
                 }
             }
-            //remove column if all elements are empty:
-            if (this.mode == 0){
-                if (_dpex[_q].every(element => element === null)){
-                        _dpex.splice(_q, 1) 
+            
+        }
+
+        if (this.mode == 0) {
+            for (let u = _dpex.length-1; u > 0; u--) {
+                if (_dpex[u].every(element => element === null) && u < this.width) {
+                    _dpex.push(_dpex.splice(u, 1)[0])
                 }
             }
         }
+        
+        let tsize = _dpex.length
+        if (tsize > this.width) {
+            throw new Error('Array size is incorrect');
+            console.log(_dpex)
+        }
+
         if (this.mode == 1 || this.mode == 2){
             for (let c = 0; c < _dpex.length; c++){
                 for (let t = 0; t < _dpex[c].length; t++){
@@ -646,6 +692,7 @@ class SameGame {
         try {
 
             for (let c = 0; c < collector.length; c++){
+
                 if (collector.length > this.error_tolerance_level){
                     console.log(collector)
                     throw new Error('Something is broken!');
@@ -655,6 +702,9 @@ class SameGame {
                 pos = collector[c].split("_")
                 let current_x  = (pos[0]/this.square_size)
                 let current_y  = (pos[1]/this.square_size)
+
+
+
                 //check Left: _x -1
                 if ((current_x - 1) >= 0){
                     if (this.squares[current_y][(current_x - 1)] == colorsearch){
