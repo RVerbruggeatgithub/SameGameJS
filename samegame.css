@@ -185,7 +185,7 @@ color: #f1f1f1;
 
 }
 
-.menbut:hover{
+.menbut:hover, mainmenbut:hover{
     color: #f1f1f1;
     /*border:2px solid #f1f1f1;*/
 }
@@ -206,6 +206,23 @@ color: #f1f1f1;
 .optionmenu > table{
     position: absolute;
     width: 100%;
+}
+
+.mainmenbut {
+    background-color: #111;
+    /*padding: 4px 7px 4px 7px;*/
+    text-decoration: none;
+    /*float:right;*/
+    /*margin-right: 10px;*/
+    margin: auto;
+    text-align: center;
+    width: 20%;
+    float: left;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    /*border:2px solid #818181;
+    border-radius: 5px; */
 }
 
 .menbut, .menitm{
@@ -311,6 +328,7 @@ section {
     display: flex;
     flex-direction: row;
     gap: 10px;
+
   }
   
   ._card {
@@ -414,3 +432,36 @@ section {
     text-overflow: '';
   }
 
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    background-color: #b1abab;
+    border-radius: 20px;
+    float: left;
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #666666;
+    top: 1px;
+    transition: all 0.3s;
+}
+
+.rsm:checked + .switch::after {
+    left: 20px;
+}
+
+.rsm:checked + .switch {
+    background-color: #eee;
+}
+
+.rsm {
+    display: none;
+}

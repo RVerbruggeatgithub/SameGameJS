@@ -22,7 +22,7 @@ class SameGame {
         this.addtime = 1;
         this.stoptime = true;
         this.border_highlight = "2px solid white"; //"2px dashed #cccccc"
-        this.gameisrunning = true;
+        this.gameisrunning = false;
         this.seedData = []
         this.colorspick = []
         this.squares = this.CreateMap()
@@ -84,21 +84,25 @@ class SameGame {
     Toggle_ResponsiveMode(){
         //get height, subtract 50 (menu) from it
         this.responsive = !this.responsive
-        let flex_height = window.innerHeight - 85;
-        let flex_width = window.innerWidth - 85;
-        if (flex_height < 400) {
-            throw new Error('Screen height too small.');
-        }
+        if (this.responsive) {
+            let flex_height = window.innerHeight - 85;
+            let flex_width = window.innerWidth - 85;
+            if (flex_height < 400) {
+                throw new Error('Screen height too small.');
+            }
+            
+            $(".ufld").css('height', flex_height + "px");
+            $(".ufld").css('width', flex_width + "px");
+            this.square_size = Math.round($('#BlockSize').val());
 
-        $(".ufld").css('height', flex_height + "px");
-        $(".ufld").css('width', flex_width + "px");
-        this.width = Math.floor(flex_width / 50)
-        this.height = Math.floor(flex_height / 50)
-        console.log(this.width, this.height)
+            this.width = Math.floor(flex_width / this.square_size)
+            this.height = Math.floor(flex_height / this.square_size)
+            console.log(this.width, this.height)
+        }
 
     }
 
-    StartTimer(){
+    StartTimer() {
         let timer = this.timer = 30
         let self = this;
         if (this.gameisrunning) {
@@ -122,7 +126,7 @@ class SameGame {
             }
             //self.gameisrunning = true
             
-            if (timer == 0) {
+            if (timer == 0 && self.gameisrunning) {
                 gameover()
                 if (typeof onEnd === "function") onEnd.call(self);
                 self.gameisrunning = false
@@ -135,7 +139,6 @@ class SameGame {
                 self.addtime = 0;
             }
             timer--;
-            //self.totalSeconds = Math.round((endTime - now) / 1000); // update totalSeconds placeholder
             if (timer >= 30){
                 $("#timer").html("<span style='color:white'>"+toHHMMSS(timer)+"</span>");
             }
@@ -191,11 +194,13 @@ class SameGame {
                 churro_ = (colorcounter+1)+""+finalc
             }
         }
-        churro = churro+""+churro_+""+""+pad(this.width, 3)+""+pad(this.height, 3)+""+pad(this.variation, 3)+""+pad(this.square_size, 3)+""+pad(this.mode, 3)
+        churro = churro + "" + churro_ + "" + "" + pad(this.width, 3) + "" + pad(this.height, 3) + "" + pad(this.variation, 3) + "" + pad(this.square_size, 3) + "" + pad(this.mode, 3)
+        churro = sg_compress(churro)
         return churro
     }
 
-    LoadSeed(seed, reset=true, sq=null) {
+    LoadSeed(seed, reset = true, sq = null) {
+        seed = sg_decompress(seed)
         try{
             let a, b, c, d, e, seedData, squaresize
             [a, b, c, d, e] = seed.substring(seed.length - 15).match(/.{1,3}/g)
@@ -214,8 +219,8 @@ class SameGame {
             let outputData = []
             let colct = 0
             //let cells = seed.substring(0, seed.lastIndexOf("R")).match(/.{1,4}/g)
-            for (let seed in seedData) { 
-                let _s = seedData[seed].split("")
+            for (let s in seedData) { 
+                let _s = seedData[s].split("")
                 let colormap = _s[1]
                 let colorct = _s[0]
                 
@@ -229,12 +234,14 @@ class SameGame {
                 }
 
             }
+            
             if (mappedData.length != (width*height)){
                 throw new Error('Invalid Seed data');
             }
             for (let i = 0; i < mappedData.length; i += width) {
                 outputData.push(mappedData.slice(i, i + width));
             }
+            
             if (reset){
             this.score = 0;
             this.UpdateScore();
@@ -253,10 +260,11 @@ class SameGame {
             }
             this.square_size = Math.round(squaresize)
             this.squares = outputData
-            //$("#samegamefield").css('height', (this.square_size*this.height) + "px");
-            //$("#samegamefield").css('width', (this.square_size * this.width) + "px");
+            $("#samegamefield").css('height', (this.square_size * this.height) + "px");
+            $("#samegamefield").css('width', (this.square_size * this.width) + "px");
 
             this.DrawMap()
+
             return true
         }
         catch (error) {
@@ -265,24 +273,24 @@ class SameGame {
         
     }
 
-    DrawMap(){ 
+    DrawMap() { 
+        $("#samegamefield").empty()
         if (this.update){
             $("#samegamefield").css('height', (this.square_size*this.height) + "px");
             $("#samegamefield").css('width', (this.square_size*this.width) + "px");
-            //$("#samegamefield").css('left', this.left_adj + "px");
-            
             $(".ufld").css('height', (this.square_size * this.height) + "px");
             $(".ufld").css('width', (this.square_size * this.width) + "px");
             this.update = false
         }
         let _x_pos = 0
         let _y_pos = 0
-        $("#samegamefield").empty()
-        for (var r = 0; r <= this.squares.length-1; r++){
+        
+        for (var r = 0; r <= this.squares.length - 1; r++){
             for (let c = 0; c <= this.squares[r].length-1; c++){
                 let e = ""
                 let _left = Math.round(_x_pos)
                 if (this.squares[r][c] != null) {
+                    
                     //let _left = Math.round(_x_pos) + 12 + this.left_adj
                     e = $('<div id="' + _x_pos + '_' + _y_pos + '" class="box" style="width:' + (this.square_size - 4) + 'px; height:' + (this.square_size - 4) + 'px; top:' + (_y_pos) + 'px;float:left;left:' + _left + 'px;background-color:#' + this.squares[r][c] + ';border-top: 2px solid #' + this.squares[r][c] + '; border-right: 2px solid #' + this.squares[r][c] + '; border-bottom: 2px solid #' + this.squares[r][c] + '; border-left: 2px solid #' + this.squares[r][c] + ';border-radius: 20%;"></div>');
                     $("#samegamefield").append(e)
@@ -314,12 +322,17 @@ class SameGame {
         this.UpdateScore();
         this.mode = $('input[name="gamemode"]:checked').val();
         this.variation = Math.round($('#variation').val());
-        if (this.responsive) {
-            this.Toggle_ResponsiveMode()
-        }
-        else {
+        if (!this.responsive) {
             this.width = Math.round($('#Width').val());
             this.height = Math.round($('#Height').val());
+        }
+        if (this.mode == 2) {
+            console.log("boo")
+            this.total_extra_time = 0;
+            this.variation = 4;
+            $("#timer").show()
+            this.StartTimer();
+            //this.StartTimer()
         }
 
         this.stats = {
@@ -331,13 +344,9 @@ class SameGame {
         this.square_size = Math.round($('#BlockSize').val());
         this.squares = this.CreateMap()
         this.DrawMap()
-        if (this.mode == 2) {
-            this.total_extra_time = 0;
-            this.variation = 4;
-            $("#timer").show()
-            this.StartTimer();
-            //this.StartTimer()
-        }
+
+        $("#current_seed").html(this.CreateSeed())
+
     }
 
 
@@ -373,18 +382,14 @@ class SameGame {
             return false
         }
         let squarecounter = 0
-
+        
         for (var row = 0; row <= this.squares.length-1; row++){
             for (let col = 0; col <= this.squares[row].length-1; col++){
         // check for each square if anything is attached, first time this is true, return true.
                 let pos;
                 let collector = []
                 collector.push(col*this.square_size+"_"+row*this.square_size) 
-                //console.log(this.squares)
-                //console.log(row*this.square_size+"_"+col*this.square_size)
-                
-                //collector.push(row*this.square_size+"_"+col*this.square_size) 
-                //colorsearch = this.squares[colorsearch[0]/this.square_size][[1]/this.square_size]
+
                 let colorsearch= this.squares[row][col]
 
                 if (!colorsearch || colorsearch == null){

@@ -1,291 +1,283 @@
 <html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
-        <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
-        <script type="text/javascript" src="samegame.js"></script>
-        <script type="text/javascript" src="utilfn.js"></script>
-        <link rel="stylesheet" href="samegame.css">
-        <script>
-            difficulty_level = ["", "", "Very Easy", "Beginner", "Novice", "Intermediate", "Expert", "Master", "Grand Master", "Impossible"]
-            colorSchemes= {
-                "Standard" : ["2BAF10","AF8C10","2D70BC","C0269C","26B8C0","6E26C0","8F1A1A","1A8F89","FFFF00","C0FFEE"],
-                "Nature" : ['f99b95','254c3d','65927a','cab69a','8b7764','088da5','003366','ffffff','93c572','ffdf9e'],
-                "Instagram" : ['5b51d8','c13584','f77737','ffdc80','833ab4','e1306c','fd1d1d','405de6','fcaf45','ffffff'],
-                "GreyScale" : ['B2BEB5','A9A9A9','808080','6082B6','D3D3D3','899499','C0C0C0','848884','71797E','708090'],
-            }
-            function openMainMenu() {
-                $("#mySidenav").width("100%")
-            }
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+    <script type="text/javascript" src="samegame.js"></script>
+    <script type="text/javascript" src="compression.js"></script>
+    <script type="text/javascript" src="utilfn.js"></script>
+    <link rel="stylesheet" href="samegame.css">
+    <script>
+        difficulty_level = ["", "", "Very Easy", "Beginner", "Novice", "Intermediate", "Expert", "Master", "Grand Master", "Impossible"]
+        colorSchemes = {
+            "Standard": ["2BAF10", "AF8C10", "2D70BC", "C0269C", "26B8C0", "6E26C0", "8F1A1A", "1A8F89", "FFFF00", "C0FFEE"],
+            "Nature": ['f99b95', '254c3d', '65927a', 'cab69a', '8b7764', '088da5', '003366', 'ffffff', '93c572', 'ffdf9e'],
+            "Instagram": ['5b51d8', 'c13584', 'f77737', 'ffdc80', '833ab4', 'e1306c', 'fd1d1d', '405de6', 'fcaf45', 'ffffff'],
+            "GreyScale": ['B2BEB5', 'A9A9A9', '808080', '6082B6', 'D3D3D3', '899499', 'C0C0C0', '848884', '71797E', '708090'],
+        }
+        function openMainMenu() {
+            $("#mySidenav").width("100%")
+        }
 
-            function closeNav() {
-                $("#mySidenav").width("0px")
-            }
+        function closeNav() {
+            $("#mySidenav").width("0px")
+        }
 
-            function openOptions() {
-                $("#mySidenav").width("0px")
-                $("#myOptionNav").width("100%")
-            }
+        function openOptions() {
+            $("#mySidenav").width("0px")
+            $("#myOptionNav").width("100%")
+        }
 
-            function closeOptions() {
-                $("#myOptionNav").width("0px")
-                $("#mySidenav").width("100%")
-                $("#myStatsNav").width("0%")
-                $("#mySeedNav").width("0%")
-            }
+        function closeOptions() {
+            $("#myOptionNav").width("0px")
+            $("#mySidenav").width("100%")
+            $("#myStatsNav").width("0%")
+            $("#mySeedNav").width("0%")
+        }
 
-            function openStats() {
-                $("#stats_output").html(game.DisplayStatistics())
-                $("#mySidenav").width("0px")
-                $("#myOptionNav").width("0%")
-                $("#myStatsNav").width("100%")
-                $("#mySeedNav").width("0%")
-            }
+        function openStats() {
+            $("#stats_output").html(game.DisplayStatistics())
+            $("#mySidenav").width("0px")
+            $("#myOptionNav").width("0%")
+            $("#myStatsNav").width("100%")
+            $("#mySeedNav").width("0%")
+        }
 
-            function closeStats() {
-                $("#myOptionNav").width("0px")
-                $("#mySidenav").width("100%")
-                $("#myStatsNav").width("0%")
-                $("#mySeedNav").width("0%")
-            }
+        function closeStats() {
+            $("#myOptionNav").width("0px")
+            $("#mySidenav").width("100%")
+            $("#myStatsNav").width("0%")
+            $("#mySeedNav").width("0%")
+        }
 
-            function openSeed() {
-                $("#stats_output").html(game.DisplayStatistics())
-                $("#mySidenav").width("0px")
-                $("#myOptionNav").width("0%")
-                $("#myStatsNav").width("0%")
-                $("#mySeedNav").width("100%")
-            }
+        function openSeed() {
+            $("#stats_output").html(game.DisplayStatistics())
+            $("#mySidenav").width("0px")
+            $("#myOptionNav").width("0%")
+            $("#myStatsNav").width("0%")
+            $("#mySeedNav").width("100%")
+        }
 
-            function closeSeed() {
-                
-                $("#mySidenav").width("100%")
-                $("#myStatsNav").width("0%")
-                $("#mySeedNav").width("0%")
-            }
+        function closeSeed() {
 
-            function closeAll(){
-                $("#myOptionNav").width("0px")
-                $("#mySidenav").width("0%")
-                $("#myStatsNav").width("0%")
-                $("#mySeedNav").width("0%")
-            }
+            $("#mySidenav").width("100%")
+            $("#myStatsNav").width("0%")
+            $("#mySeedNav").width("0%")
+        }
 
-            game = new SameGame(20, 16, 3, 30, 0)
-            
-            $(document).ready(function(){
-                openMainMenu()
-                $(seeddata.data).map(function () {
-                    console.log(this.name)
-                    $('#loadseeds').append($("<option>XX</option>").val(this.seed).html(this.name));
-                })
+        function closeAll() {
+            $("#myOptionNav").width("0px")
+            $("#mySidenav").width("0%")
+            $("#myStatsNav").width("0%")
+            $("#mySeedNav").width("0%")
+        }
+
+        game = new SameGame(20, 16, 3, 30, 0)
+
+        $(document).ready(function () {
+            openMainMenu()
+            $(seeddata.data).map(function () {
+                console.log(this.name)
+                $('#loadseeds').append($("<option>XX</option>").val(this.seed).html(this.name));
+            })
+
+            $('#responsive_mode').change(function () {
+                game.Toggle_ResponsiveMode()
+                console.log(game.responsive)
+                if (game.responsive) {
+                    $(".bsize").hide()
+                }
+                else {
+                    $(".bsize").show()
+                }
+            });
+
+            Object.keys(colorSchemes).map(function (item, index) {
+
+                esp = colorSchemes[item]
+                let penta = `<div class="_card"><input class="_input" type="radio" name="card" id="card" value="${item}">
+                                        <span class="_check"></span>
+                                        <label class="_label">
+                                          <div class="_title">`
+                for (const el in esp) {
+                    penta += "<span style='float:left;background-color:#" + esp[el] + ";width:10px;height:30px;display:block'></span>"
+                }
+                penta += `</div>
+                                        </label>
+                                      </div>`
+                $('._wrapper').append(penta)
+            })
 
 
-                Object.keys(colorSchemes).map(function(item, index){
-                        
-                        esp = colorSchemes[item]
-                        let penta = `<div class="_card"><input class="_input" type="radio" name="card" id="card" value="${item}">
-                                    <span class="_check"></span>
-                                    <label class="_label">
-                                      <div class="_title">`
-                        for (const el in esp){
-                            penta+="<span style='float:left;background-color:#"+esp[el]+";width:10px;height:30px;display:block'></span>"
-                        }
-                        penta+=`</div>
-                                    </label>
-                                  </div>`
-                        $('._wrapper').append(penta)
-                })
-
-                   
-                $("#next").click(function() {
+            $("#next").click(function () {
                 var nextElement = $('#variation > option:selected').next('option');
                 if (nextElement.length > 0) {
                     $('#variation > option:selected').removeAttr('selected').next('option').attr('selected', 'selected');
                 }
-                });
+            });
 
-                $("#prev").click(function() {
+            $("#prev").click(function () {
                 var nextElement = $('#variation > option:selected').prev('option');
                 if (nextElement.length > 0) {
                     $('#variation > option:selected').removeAttr('selected').prev('option').attr('selected', 'selected');
                 }
-                });
+            });
 
+            //game.NewGame()
+            $( "#resume" ).hide()
+
+
+
+            $('#samegamefield').on('click', '.box', {}, function (ev) {
+                game.GetSquare($(this).attr('id'))
+            })
+
+            $('#BlockSize').change(function () {
+                $('#sample').css('width', $(this).val()).css('height', $(this).val())
+                $('#sample').text($(this).val())
+                game.Reload($(this).val())
+
+            })
+
+
+            $('#loadseeds').change(function () {
+                let qseed = this.value
+                qseed = sg_decompress(qseed)
+                let width, height, difficulty, size, mode
+                [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)
+                //                    if error
+                //$('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
+                $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>" + Math.round(width) + " x " + Math.round(height) + "</span>, Difficulty: <span style='font-weight: bold'>" + difficulty_level[Math.round(difficulty) - 1] + "</span>, Square Size: <span style='font-weight: bold'>" + Math.round(size) + "</span>, Mode: <span style='font-weight: bold'>" + mode + "</span>")
+                $('#seeddata').val(this.value)
+            })
+
+            $('#seeddata').change(function () {
+                let qseed = this.value
+                qseed = sg_decompress(qseed)
+                let width, height, difficulty, size, mode
+                [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)
+                $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>" + Math.round(width) + " x " + Math.round(height) + "</span>, Difficulty: <span style='font-weight: bold'>" + difficulty_level[Math.round(difficulty) - 1] + "</span>, Square Size: <span style='font-weight: bold'>" + Math.round(size) + "</span>, Mode: <span style='font-weight: bold'>" + mode + "</span>")
+            })
+
+
+
+            $(document).on("mouseenter", ".box", function () {
+                // hover starts code here
+                game.HighLight($(this).attr('id'))
+                let cur_border_color = $(this).css("border-left-color")
+            });
+
+            $(document).on("mouseleave", ".box", function () {
+                // hover starts code here
+                collector = game.HighLight($(this).attr('id'))
+                if (collector.length) {
+                    for (let cell in collector) {
+                        let cellcolor = $(this).css("background-color")
+                        let resetbordercolor = "2px solid " + cellcolor
+                        $("#" + collector[cell]).css('border-right', resetbordercolor);
+                        $("#" + collector[cell]).css('border-bottom', resetbordercolor);
+                        $("#" + collector[cell]).css('border-left', resetbordercolor);
+                        $("#" + collector[cell]).css('border-top', resetbordercolor);
+                    }
+                }
+
+            });
+
+            $('#newgame').on('click', null, {}, function (ev) {
+                game.SetColorScheme(colorSchemes[$('#card:checked').val()])
                 game.NewGame()
-                $( "#resume" ).show()
+                $("#resume").show()
+                $("#openmenu").show()
+                closeNav()
+                if (!game.gameisrunning) {
+                    game.timer = 0
+                    //$("#samegamefield").empty()
+                    $("#dialog-ready").dialog("open")
+                }
+            })
 
-                let readybox = $( "#dialog-ready" ).dialog({
-                        resizable: false,
-                        height: "auto",
-                        width: 400,
-                        modal: true,
-                        buttons: {
-                            "Go!": function() {
-                                game.NewGame();
-                                $( this ).dialog( "close" );
-                            }
-                        }
-                });
-                readybox.dialog("close")
-                var moveLeft = 20;
-                var moveDown = 10;
-                $('.trigger').hover(function(e) {
-                            $('div#pop-up').show();
+            $('#options').on('click', null, {}, function (ev) {
+                openOptions()
+            })
 
-                        }, function() {
-                            $('div#pop-up').hide();
-                        });
+            $('#playseed').on('click', null, {}, function (ev) {
+                //CHECK IF SEED WORKS FIRST!!
+                try {
 
-                        $('a.trigger').mousemove(function(e) {
-                            $("div#pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
-                        });
-
-                $('#samegamefield').on('click','.box', {} ,function(ev){
-                    game.GetSquare($(this).attr('id'))
-                })
-
-                $('#BlockSize').change(function(){
-                    $('#sample').css('width', $(this).val()).css('height', $(this).val())
-                    $('#sample').text($(this).val())
-                    game.Reload($(this).val())
-  
-                })
-
-                
-                $('#loadseeds').change(function(){
-                    let qseed = this.value
-                    let width, height, difficulty, size, mode
-                    [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)
-//                    if error
-//$('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
-                    $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>"+Math.round(width)+" x "+Math.round(height)+"</span>, Difficulty: <span style='font-weight: bold'>"+difficulty_level[Math.round(difficulty)-1]+"</span>, Square Size: <span style='font-weight: bold'>"+Math.round(size)+"</span>, Mode: <span style='font-weight: bold'>"+mode+"</span>")
-                    $('#seeddata').val(qseed)
-                })
-
-                $('#seeddata').change(function(){
-                    let qseed = this.value
-                    let width, height, difficulty, size, mode
-                    [width, height, difficulty, size, mode] = qseed.substring(qseed.length - 15).match(/.{1,3}/g)                  
-                    $('#seeddetails').html("Grid Size: <span style='font-weight: bold'>"+Math.round(width)+" x "+Math.round(height)+"</span>, Difficulty: <span style='font-weight: bold'>"+difficulty_level[Math.round(difficulty)-1]+"</span>, Square Size: <span style='font-weight: bold'>"+Math.round(size)+"</span>, Mode: <span style='font-weight: bold'>"+mode+"</span>")
-                })
-
-
-
-                $(document).on("mouseenter", ".box", function() {
-                    // hover starts code here
-                    game.HighLight($(this).attr('id'))
-                    let cur_border_color = $(this).css("border-left-color")
-                });
-
-                $(document).on("mouseleave", ".box", function() {
-                    // hover starts code here
-                    collector = game.HighLight($(this).attr('id'))
-                    if (collector.length){
-                        for (let cell in collector) {
-                            let cellcolor = $(this).css("background-color")
-                            let resetbordercolor = "2px solid " + cellcolor
-                            $("#" + collector[cell]).css('border-right', resetbordercolor);
-                            $("#" + collector[cell]).css('border-bottom', resetbordercolor);
-                            $("#" + collector[cell]).css('border-left', resetbordercolor);
-                            $("#" + collector[cell]).css('border-top', resetbordercolor);
-                        }
-                    }
-  
-                });
-
-                $('#newgame').on('click',null, {} ,function(ev){
                     game.SetColorScheme(colorSchemes[$('#card:checked').val()])
-                    game.NewGame()
-                    $( "#openmenu" ).show()
-                    closeNav()
-                        if (!game.gameisrunning){
-                            game.timer = 0
-                            $("#samegamefield").empty()
-                            $( "#dialog-ready" ).dialog( "open" )
-                        }
-                })
+                    let seeddata = $('#seeddata').val()
+                    game.LoadSeed(seeddata)
+                    closeAll()
 
-                $('#options').on('click',null, {} ,function(ev){
-                    openOptions()
-                })
-
-                $('#playseed').on('click',null, {} ,function(ev){
-                    //CHECK IF SEED WORKS FIRST!!
-                    try {
-                        
+                }
+                catch (err) {
+                    $('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
+                }
 
 
-                        game.LoadSeed($('#seeddata').val())
-                        closeAll()
-                        
-                    }
-                    catch (err) {
-                        $('#seeddetails').html("<span style='font-weight: bold; color:red'>Invalid Seed data.</span>")
-                    }
 
-                    
-                    
-                })
+            })
 
-                
+            responsive_mode
 
-                $('#lseed').on('click',null, {} ,function(ev){
-                    openSeed()
-                })
 
-                $('#stats').on('click',null, {} ,function(ev){
-                    openStats()
-                })
 
-                $('#resume').on('click',null, {} ,function(ev){
-                    closeNav()
-                })
+            $('#lseed').on('click', null, {}, function (ev) {
+                openSeed()
+            })
 
-                $( "#openmenu" ).button().on( "click", function() {
-                $( "#dialog-confirm" ).dialog({
+            $('#stats').on('click', null, {}, function (ev) {
+                openStats()
+            })
+
+            $('#resume').on('click', null, {}, function (ev) {
+                closeNav()
+            })
+
+            $("#openmenu").button().on("click", function () {
+                $("#dialog-confirm").dialog({
                     resizable: false,
                     height: "auto",
                     width: 400,
                     modal: true,
                     buttons: {
-                        "New Game": function() {
+                        "New Game": function () {
                             game.NewGame()
-                            if (!game.gameisrunning){
+                            if (!game.gameisrunning) {
                                 game.timer = 0
                                 $("#samegamefield").empty()
-                                $( this ).dialog( "close" );
-                                $( "#dialog-ready" ).dialog( "open" )
+                                $(this).dialog("close");
+                                $("#dialog-ready").dialog("open")
                             }
                             else {
-                                $( this ).dialog( "close" );
+                                $(this).dialog("close");
                             }
                         },
-                        Cancel: function() {
-                            $( this ).dialog( "close" );
+                        Cancel: function () {
+                            $(this).dialog("close");
                         }
                     }
-                    });
                 });
-            })
+            });
+        })
 
-            function gameover(){
-                $( "#stats_output").html(game.DisplayStatistics())
-                $( "#resume" ).hide()
-                openStats()
-            }
+        function gameover() {
+            $("#stats_output").html(game.DisplayStatistics())
+            $("#resume").hide()
+            openStats()
+        }
 
-        </script>
-    </head>
+    </script>
+</head>
     <body>
-        <span style="font-size:30px;cursor:pointer; float: left; margin-left: 0px" class="menbut" onclick="openMainMenu()">&#9776; Menu</span>
+        <span style="font-size:30px;cursor:pointer; float: left; margin-left: 0px" class="mainmenbut" onclick="openMainMenu()">&#9776; Menu</span>
         
         <div class="top_center" style="padding: 12 12 0 12">
                       
         </div>
         <div style="height: 50px;">
-            <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="score" style="float: left; margin: 5 25 5 5;"></div></span>
-            <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: 25px"><div id="timer" style="display: none; float: left; margin: 5 5 5 25;"></div></span>
+            <span style="font-size:30px;cursor:pointer;color: white; margin-right: 25px; margin-left: auto"><div id="score" style="float: left; margin: 5 25 5 5;"></div><div id="timer" style="display: block; margin: 5 25 5 5;"></div></span>
+            
         </div>
         <div class="ufld">
             <div name="samegamefield" id="samegamefield" class="field">
@@ -309,13 +301,15 @@
             <span style="font-size:30px;cursor:pointer;  " class="menbut" id="resume">Resume</span>
         </div>
         <div id="myStatsNav" class="statsmenu">
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" onclick="closeStats()">&#11106; Back</span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%; max-height:700px; " class="menitm">
+            <span style="font-size:30px;cursor:pointer;  width: 70%;" class="menbut" onclick="closeStats()">&#11106; Back</span>
+            <span style="font-size:30px;cursor:pointer;  width: 70%; max-height:700px; " class="menitm">
                 <p>
                     <i>Current Game statistics:</i>
                 </p>
                 <div id="stats_output">??</div>
+
             </span>
+
         </div>
         <div id="mySeedNav" class="seedmenu">
             <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 25%" class="menbut" onclick="closeSeed()">&#11106; Back</span>
@@ -324,7 +318,8 @@
                     
                     <table>
                         <tr>
-                            <td colspan="2"><h2>Select Preset Seed Data:</h2>
+                            <td colspan="2">
+                                <h2>Select Preset Seed Data:</h2>
                                 <p>Try to beat your best score on these seeds.</p>
                             </td>
                         </tr>
@@ -335,7 +330,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><h2>Manually Enter Seed Data:</h2>
+                            <td colspan="2">
+                                <h2>Manually Enter Seed Data:</h2>
                             </td>
                         </tr>
                         <tr>
@@ -348,7 +344,17 @@
                                 <textarea id="seeddata" name="seeddata" rows="5" cols="100" class="menitm" style="width:75%; float:left"></textarea>
                             </td>
                         </tr>
-                        
+                        <tr>
+                            <td colspan="2">
+                                <h2>Current Seed ID:</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div id="current_seed" style="width: 100%; margin-left: auto; margin-right: auto;white-space: initial;word-wrap: break-word; font-size:8px"></div>
+                            </td>
+                        </tr>
+
                     </table>
                     
                 </p>
@@ -356,8 +362,8 @@
             <span style="font-size:30px;cursor:pointer;  width: 10%; margin-left: 25%" class="menbut" id="playseed">&#11106; Play</span>
         </div>
         <div id="myOptionNav" class="optionmenu">
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%" class="menbut" onclick="closeOptions()">&#11106; Back</span>
-            <span style="font-size:30px;cursor:pointer;  width: 50%; margin-left: 25%; max-height:700px; overflow-y: scroll;" class="menitm">
+            <span style="font-size:30px;cursor:pointer;  width: 80%; margin-left: auto; margin-right: auto" class="menbut" onclick="closeOptions()">&#11106; Back</span>
+            <span style="font-size: 30px; cursor: pointer; width: 80%; margin-left: auto; margin-right: auto; overflow-y: scroll;" class="menitm">
             <p>
                 <table>
                     <tr>
@@ -368,120 +374,127 @@
 
                             <h2>Select Mode*:</h2>
                             <section>
-                            <div>
-                              <input type="radio" id="control_01" name="gamemode" value="0" checked  class="apx">
-                              <label class="apxlabel" for="control_01">
-                                <h2>Classic</h2>
-                                <p>Empty the field by selecting the groups. The bigger the groups, the bigger the score. Clearing the entire field will double your final score.</p>
-                              </label>
-                            </div>
-                            <div>
-                              <input type="radio" id="control_02" name="gamemode" value="1" class="apx">
-                              <label class="apxlabel" for="control_02">
-                                <h2>Endless</h2>
-                                <p>Dig through the field to score as many points as you can. Play until you're stuck or until your bored. Best played with Novice or higher difficulty. </p>
-                              </label>
-                            </div>
-                            <div>
-                              <input type="radio" id="control_03" name="gamemode" value="2"  class="apx">
-                              <label class="apxlabel" for="control_03">
-                                <h2>Survival</h2>
-                                <p>Time is counting down. Clear groups to earn extra time, bigger groups give additional extra time. Difficulty Starts at Beginner and increases over time.</p>
-                              </label>
-                            </div>
+                                <div>
+                                    <input type="radio" id="control_01" name="gamemode" value="0" checked class="apx">
+                                    <label class="apxlabel" for="control_01">
+                                        <h2>Classic</h2>
+                                        <p>Empty the field by selecting the groups. The bigger the groups, the bigger the score. Clearing the entire field will double your final score.</p>
+                                    </label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="control_02" name="gamemode" value="1" class="apx">
+                                    <label class="apxlabel" for="control_02">
+                                        <h2>Endless</h2>
+                                        <p>Dig through the field to score as many points as you can. Play until you're stuck or until your bored. Best played with Novice or higher difficulty. </p>
+                                    </label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="control_03" name="gamemode" value="2" class="apx">
+                                    <label class="apxlabel" for="control_03">
+                                        <h2>Survival</h2>
+                                        <p>Time is counting down. Clear groups to earn extra time, bigger groups give additional extra time. Difficulty Starts at Beginner and increases over time.</p>
+                                    </label>
+                                </div>
                             </section>
 
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><h2>Difficulty*:</h2> 
+                        <td colspan="2">
+                            <h2>Difficulty*:</h2>
                             <button class="adjbutton" type="button" id="prev" style="float:left;">◀</button>
                             <select id="variation" disabled>
-                            <option value="3">Very Easy</option>
-                            <option value="4">Beginner</option>
-                            <option value="5">Novice</option>
-                            <option value="6">Intermediate</option>
-                            <option value="7">Expert</option>
-                            <option value="8">Master</option>
-                            <option value="9">Grand Master</option>
+                                <option value="3">Very Easy</option>
+                                <option value="4">Beginner</option>
+                                <option value="5">Novice</option>
+                                <option value="6">Intermediate</option>
+                                <option value="7">Expert</option>
+                                <option value="8">Master</option>
+                                <option value="9">Grand Master</option>
                             </select>
                             <button class="adjbutton" type="button" id="next">▶</button>
 
-                            
+
                         </td>
                     </tr>
                     <tr>
                         <td colspan="2"><h2>Board Size*:</h2></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><label for="Width"> Width:</label>&nbsp;<select name="Width" id="Width">
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option selected value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                            <option value="24">24</option>
-                            <option value="25">25</option>
-                            <option value="26">26</option>
-                            <option value="27">27</option>
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30">30</option>
-                            <option value="50">MAX</option>
-                        </select>&nbsp;
-                        <label for="Height"> Height:</label>&nbsp;<select name="Height" id="Height">
-                          <option value="6">6</option>
-                          <option value="7">7</option>
-                          <option value="8">8</option>
-                          <option value="9">9</option>
-                          <option selected value="10">10</option>
-                          <option value="11">11</option>
-                          <option value="12">12</option>
-                          <option value="13">13</option>
-                          <option value="14">14</option>
-                          <option value="15">15</option>
-                          <option value="16">16</option>
-                          <option value="17">17</option>
-                          <option value="18">18</option>
-                          <option value="19">19</option>
-                          <option value="20">20</option>
-                          <option value="21">21</option>
-                          <option value="22">22</option>
-                          <option value="50">MAX</option>
-                        </select></td>
+                        <td colspan="2">
+                            <div style="float:left;margin-right:25px">Enable Responsive Mode</div>
+
+                            <input type="checkbox" id="responsive_mode" name="responsive_mode" value="1" class="rsm">
+                            <label for="responsive_mode" class="switch"></label>
+                            <div style="float:left;margin-left:25px"> (optimize width/height for screen size)</div>
+                        </td>
                     </tr>
+                    <tr class="bsize">
+                        <td colspan="2">
+                            <label for="Width"> Width: </label>&nbsp;<select name="Width" id="Width">
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option selected value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                                <option value="25">25</option>
+                                <option value="26">26</option>
+                                <option value="27">27</option>
+                                <option value="28">28</option>
+                                <option value="29">29</option>
+                                <option value="30">30</option>
+                                <option value="50">MAX</option>
+                            </select>&nbsp;
+                            <label for="Height"> Height: </label>&nbsp;<select name="Height" id="Height">
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option selected value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="50">MAX</option>
+                            </select>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td colspan="2"><h2>Block Size:</h2></td>
                     </tr>
                     <tr>
                         <td>
-                          <input type="range" min="20" max="65" value="50" step="5" class="slider" id="BlockSize" style="width:400px; margin-top:10px; margin-bottom: 45px; color:white">
-                          
+                            <input type="range" min="20" max="65" value="50" step="5" class="slider" id="BlockSize" style="width:400px; margin-top:10px; margin-bottom: 45px; color:white">
+
                         </td>
                         <td>
                             <div id="sample" style="position:relative; width: 50px; height: 50px; background-color: #b1abab; border-width: 0px; border-style: solid;border-radius: 20%; "></div>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="2">
-                            <label for="responsive_mode">Enable Responsive Mode</label><br>
-                            <input type="checkbox" id="responsive_mode" name="responsive_mode" value="1">
-                            
-                          </td>
-                    </tr>
+
                     <tr>
                         <td colspan="2"><h2>Color Schema*:</h2></td>
                     </tr>
@@ -491,12 +504,12 @@
                             </div>
                         </td>
                         <td>
-                            
                         </td>
                     </tr>
                     <tr>
-                        <td></td><td></td>
-                    </tr> 
+                        <td></td>
+                        <td><br /><br /><br /></td>
+                    </tr>
                 </table>
                 </span>
                 
